@@ -6,45 +6,53 @@ import { useDropzone } from "react-dropzone";
 import { DropZone, FileContainer, Instructions, Remove } from "./StyledFile";
 
 export function FileComponent() {
-  const { label, value, onUpdate, disabled } = useInputContext<any>();
+    const { label, value, onUpdate, disabled } = useInputContext<any>();
 
-  const onDrop = useCallback(
-    (acceptedFiles: string | any[]) => {
-      if (acceptedFiles.length) onUpdate(acceptedFiles[0]);
-    },
-    [onUpdate]
-  );
+    const onDrop = useCallback(
+        (acceptedFiles: string | any[]) => {
+            if (acceptedFiles.length) {
+                let reader = new FileReader();
 
-  const clear = useCallback(
-    (e: { stopPropagation: () => void }) => {
-      e.stopPropagation();
-      onUpdate(undefined);
-    },
-    [onUpdate]
-  );
+                reader.readAsText(acceptedFiles[0]);
 
-  const { getRootProps, getInputProps, isDragAccept } = useDropzone({
-    maxFiles: 1,
-    onDrop,
-    disabled,
-  });
+                reader.onload = function () {
+                    onUpdate(this.result);
+                };
+            }
+        },
+        [onUpdate]
+    );
 
-  const { Label, Row } = Components;
-  return (
-    <Row input>
-      <Label>{label}</Label>
-      <FileContainer fullwidth={!!value}>
-        {value && <div>{value?.name}</div>}
-        {value && <Remove onClick={clear} disabled={!value} />}
-        {!value && (
-          <DropZone {...(getRootProps({ isDragAccept }) as any)}>
-            <input {...getInputProps()} />
-            <Instructions>
-              {isDragAccept ? "drop file" : "click or drop"}
-            </Instructions>
-          </DropZone>
-        )}
-      </FileContainer>
-    </Row>
-  );
+    const clear = useCallback(
+        (e: { stopPropagation: () => void }) => {
+            e.stopPropagation();
+            onUpdate(undefined);
+        },
+        [onUpdate]
+    );
+
+    const { getRootProps, getInputProps, isDragAccept } = useDropzone({
+        maxFiles: 1,
+        onDrop,
+        disabled,
+    });
+
+    const { Label, Row } = Components;
+    return (
+        <Row input>
+            <Label>{label}</Label>
+            <FileContainer fullwidth={!!value}>
+                {value && <div>{value?.name}</div>}
+                {value && <Remove onClick={clear} disabled={!value} />}
+                {!value && (
+                    <DropZone {...(getRootProps({ isDragAccept }) as any)}>
+                        <input {...getInputProps()} />
+                        <Instructions>
+                            {isDragAccept ? "drop file" : "click or drop"}
+                        </Instructions>
+                    </DropZone>
+                )}
+            </FileContainer>
+        </Row>
+    );
 }
