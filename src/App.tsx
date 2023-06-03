@@ -46,15 +46,21 @@ const App = () => {
 
     const onChange = (file: any) => {
         if (file) {
-            // console.log(file.path);
-            // fetch(file.path)
-            //     .then((response) => response.json())
-            //     .then((data) => console.log(data));
+            const jsonData = JSON.parse(file);
+
+            deskSet({
+                ...jsonData.deskControl,
+            });
+            legSet({
+                ...jsonData.legControl,
+            });
         }
     };
+
     useControls("Import Config", {
         File: pluginFile({ onChange }),
     });
+
     useControls("Export Config", {
         SNAPSHOT: button(() => {
             if (canvasRef.current) {
@@ -177,32 +183,6 @@ const App = () => {
                 width: "100vw",
             }}
         >
-            {/* <Dropzone
-                onDrop={async (acceptedFiles: any) => {
-                    const reader = new FileReader();
-                    reader.onload = function (e: any) {
-                        var contents = e.target.result;
-                        console.log(contents);
-                        // displayContents(contents);
-                    };
-                    reader.readAsDataURL(acceptedFiles);
-
-                    // console.log(acceptedFiles[0].path);
-                    // fetchJson(acceptedFiles[0].path);
-                }}
-            >
-                {({ getRootProps, getInputProps }) => (
-                    <section>
-                        <div {...getRootProps()}>
-                            <input {...getInputProps()} />
-                            <p>
-                                Drag 'n' drop some files here, or click to
-                                select files
-                            </p>
-                        </div>
-                    </section>
-                )}
-            </Dropzone> */}
             <Canvas
                 gl={{ preserveDrawingBuffer: true }}
                 ref={canvasRef}
