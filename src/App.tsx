@@ -3,7 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { Stats, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { useControls, button, folder } from "leva";
-// import Dropzone from "react-dropzone";
+import { pluginFile } from "./levafilepicker";
 
 const App = () => {
     const canvasRef = useRef<HTMLCanvasElement>() as any;
@@ -44,6 +44,17 @@ const App = () => {
     }));
     const [legControl, legSet] = useControls(() => ({ "Table Legs": leg }));
 
+    const onChange = (file: any) => {
+        if (file) {
+            // console.log(file.path);
+            // fetch(file.path)
+            //     .then((response) => response.json())
+            //     .then((data) => console.log(data));
+        }
+    };
+    useControls("Import Config", {
+        File: pluginFile({ onChange }),
+    });
     useControls("Export Config", {
         SNAPSHOT: button(() => {
             if (canvasRef.current) {
@@ -63,7 +74,7 @@ const App = () => {
                 );
             }
         }),
-        "NEW TABLE": button(() => {
+        NEWTABLE: button(() => {
             deskSet({
                 width: 40,
                 height: 20,
@@ -159,20 +170,6 @@ const App = () => {
         );
     };
 
-    // const fetchJson = (url: any) => {
-    //     fetch(url)
-    //         .then((response) => {
-    //             console.log(response);
-    //             return response.json();
-    //         })
-    //         .then((data) => {
-    //             console.log(data);
-    //             //   setData(data);
-    //         })
-    //         .catch((e: Error) => {
-    //             console.log(e.message);
-    //         });
-    // };
     return (
         <div
             style={{
